@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>提供读取html的Text(), Html(), GetAttr()方法支持 </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\STR.Core\STR.Core.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="1.0.4" />
+	</ItemGroup>
+
+</Project>
