@@ -38,7 +38,7 @@ namespace STR.Tests
         public void CompositTest()
         {
             var inputString = """{ b: "<a>tag a</a>"}""";
-            string s1Result = string.Empty;
+            string s1Result;
             {
                 var command = "select b from datasource";
                 var core = new STRJsonReader(inputString);

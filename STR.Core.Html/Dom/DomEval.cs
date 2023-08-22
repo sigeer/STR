@@ -51,7 +51,6 @@ namespace STR.Core.Html
                 );
             else
             {
-
                 IEnumerable<Container> final;
                 if (identity.Child != null)
                 {

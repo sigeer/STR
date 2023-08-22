@@ -41,7 +41,6 @@ namespace STR.Core
             }
             return parseTree.Root;
         }
-
         public override IEnumerable<Container> RunCommand(string command)
         {
             var root = GetRootNode(command);
