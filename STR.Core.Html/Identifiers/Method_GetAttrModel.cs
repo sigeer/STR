@@ -1,16 +1,20 @@
-﻿using STR.Core.Identifiers;
+﻿using STR.Core.Exceptions;
+using STR.Core.Identifiers;
 
 namespace STR.Core.Html.Identifiers
 {
-    public class Method_GetAttrModel : FunctionIdentityModel<ElementContainer, StringContainer>
+    public class Method_GetAttrModel : FunctionIdentityModel
     {
         public Method_GetAttrModel(string identifierName, string attrName) : base(identifierName, attrName)
         {
         }
 
-        public override StringContainer Evaluate(ElementContainer element)
+        public override Container Evaluate(Container element)
         {
-            return new StringContainer(element.Value.Attributes[Params[0]].Value);
+            if (element is ElementContainer el)
+                return new StringContainer(el.Value.Attributes[Params[0]].Value);
+
+            throw new STRException("Method [GetAttr] only support Element Select input");
         }
     }
 }

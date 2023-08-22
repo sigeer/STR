@@ -3,19 +3,30 @@ using Newtonsoft.Json.Linq;
 using STR.Core.Contants;
 using STR.Core.Exceptions;
 using STR.Core.Identifiers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace STR.Core
 {
     public class JsonEval : NodeEvalBase
     {
-        public JsonContainer ReadNode(ParseTreeNode node, JsonContainer rootObj)
+        public JsonEval(IdentifierResolver identifierResolver) : base(identifierResolver)
+        {
+        }
+
+        public override IEnumerable<Container> ReadNode(ParseTreeNode node, IEnumerable<Container> elements)
+        {
+            var item = ReadNodeCore(node, elements.First() as JsonContainer);
+            yield return item;
+        }
+        public JsonContainer ReadNodeCore(ParseTreeNode node, JsonContainer rootObj)
         {
             // 获取查询对象
             var nestedNode = GetNestedNode(node);
             if (nestedNode != null)
             {
                 if (nestedNode.Term.Name != TermConstants.DataSource)
-                    rootObj = ReadNode(nestedNode, rootObj);
+                    rootObj = ReadNodeCore(nestedNode, rootObj);
             }
 
             if (node.Term.Name == TermConstants.SelectStatement)
@@ -48,7 +59,7 @@ namespace STR.Core
             JObject keyValuePairs = new JObject();
             foreach (var identifier in propertyNode.ChildNodes)
             {
-                var identity = GetIdentifierModel(identifier);
+                var identity = _identifierResolver.GetIdentifierModel(identifier);
 
                 var sectionData = SetModelFromFunctionModel(data, identity);
                 if (sectionData is JsonContainer json)
@@ -58,7 +69,7 @@ namespace STR.Core
             }
             if (propertyNode.ChildNodes.Count == 1)
             {
-                var firstIdentifier = GetIdentifierModel(propertyNode.ChildNodes[0]);
+                var firstIdentifier = _identifierResolver.GetIdentifierModel(propertyNode.ChildNodes[0]);
                 return new JsonContainer(keyValuePairs[firstIdentifier.GetFirstIdentifierName()]);
             }
             return new JsonContainer(keyValuePairs);
@@ -70,7 +81,7 @@ namespace STR.Core
                 return new JsonContainer(data.Value[identity.IdentifierName]);
             else
             {
-                var method = identity as FunctionIdentityModel<StringContainer, StringContainer>;
+                var method = identity as FunctionIdentityModel;
                 Container identityValue;
                 if (method.Child != null)
                 {

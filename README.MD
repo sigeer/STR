@@ -7,4 +7,5 @@
 - [ ] download from xxx // xxx必须是string，或者string[], 将下载这些内容
 - [x] 支持子查询
 - [ ] request getAttr('#xxx', 'href')
+- [x] select text('a') from (select b from datasource) // 支持复合查询，比如json的属性值是html (完成一半，目前功能是通过2次执行实现的)
 - [ ] select text('.content') from dom if exist('#xxx') then goto getAttr('#xxx', 'href'), loop();

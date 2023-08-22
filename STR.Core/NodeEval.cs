@@ -2,40 +2,27 @@
 using STR.Core.Contants;
 using STR.Core.Exceptions;
 using STR.Core.Identifiers;
+using System.Collections.Generic;
 
 namespace STR.Core
 {
     public class NodeEvalBase
     {
+        protected readonly IdentifierResolver _identifierResolver;
+
+        public NodeEvalBase(IdentifierResolver identifierResolver)
+        {
+            _identifierResolver = identifierResolver;
+        }
+
         public string GetReadMethod(ParseTreeNode rootNode)
         {
             return rootNode.ChildNodes[0].ChildNodes[0].Term.Name;
         }
 
-
-        public virtual BaseIdentifierModel GetIdentifierModel(ParseTreeNode node)
+        public virtual IEnumerable<Container> ReadNode(ParseTreeNode node, IEnumerable<Container> rootObj)
         {
-            if (node.Term.Name == TermConstants.MethodCall)
-            {
-                var methodName = node.ChildNodes[0].Term.Name;
-                // ------------------  methodArguments / identifier / identifierGroup
-                // var identityUnit = node.ChildNodes[1].ChildNodes[1].ChildNodes[0];
-
-                if (methodName == MethodConstants.Replace)
-                    return new Method_ReplaceModel(
-                        methodName,
-                        node.ChildNodes[1].ChildNodes[3].Token.ValueString,
-                        node.ChildNodes[1].ChildNodes[5].Token.ValueString)
-                    {
-                        Child = GetIdentifierModel(node.ChildNodes[1].ChildNodes[1].ChildNodes[0])
-                    };
-
-                throw new STRMethodNotSupportedException("not supported");
-            }
-            else if (node.Term.Name == TermConstants.Identifier)
-                return new IdentifierModel(node.Token.ValueString);
-            else
-                throw new STRMethodNotSupportedException("not supported");
+            return new List<EmptyContainer>();
         }
 
         public ParseTreeNode GetFirstNode(ParseTreeNode rootNode)

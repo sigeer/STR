@@ -1,6 +1,7 @@
 ﻿using Irony.Parsing;
 using STR.Core.Contants;
 using STR.Core.Exceptions;
+using STR.Core.Identifiers;
 using System;
 using System.Collections.Generic;
 
@@ -20,8 +21,10 @@ namespace STR.Core
     }
     public class STRJsonReader : STRReader
     {
+        readonly IdentifierResolver _identifierResolver;
         public STRJsonReader(string content) : base(content)
         {
+            _identifierResolver = new JsonIdetifierResolver();
         }
 
         protected Lazy<Parser> _jsonParser = new Lazy<Parser>(() => new Parser(new LanguageData(new JsonQueryGrammar())));
@@ -43,10 +46,10 @@ namespace STR.Core
         {
             var root = GetRootNode(command);
 
-            var eval = new JsonEval();
-            var jsonObject = eval.ReadNode(root, new JsonContainer(_content));
+            NodeEvalBase eval = new JsonEval(_identifierResolver);
+            var jsonObject = eval.ReadNode(root, new JsonContainer[] { new JsonContainer(_content) });
             if (eval.GetReadMethod(root) == TermConstants.Select)
-                return new List<Container>() { jsonObject };
+                return jsonObject;
             return null;
         }
     }

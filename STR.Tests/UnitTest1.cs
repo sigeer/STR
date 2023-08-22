@@ -33,5 +33,27 @@ namespace STR.Tests
             Console.Write(final);
             Assert.That(!string.IsNullOrEmpty(final));
         }
+
+        [Test]
+        public void CompositTest()
+        {
+            var inputString = """{ b: "<a>tag a</a>"}""";
+            string s1Result = string.Empty;
+            {
+                var command = "select b from datasource";
+                var core = new STRJsonReader(inputString);
+                var data = core.RunCommand(command);
+                s1Result = data.First().ToString();
+                Assert.That(s1Result == "<a>tag a</a>");
+            }
+
+            {
+                var command = "select text('a') from datasource";
+                var core = new STRHtmlReader(s1Result);
+                var data = core.RunCommand(command);
+                Assert.That(data.First().ToString() == "tag a");
+            }
+
+        }
     }
 }

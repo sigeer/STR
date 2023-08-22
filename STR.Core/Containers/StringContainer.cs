@@ -58,7 +58,7 @@ namespace STR.Core
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(Value);
+            return Value.Type == JTokenType.String ? Value.ToString() : JsonConvert.SerializeObject(Value);
         }
     }
 }
